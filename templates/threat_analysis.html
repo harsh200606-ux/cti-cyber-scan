@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cyber Threat Analyzer</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #0f1117;
+
+            color:
+                #ffffff;
+
+            min-height:
+                100vh;
+
+            padding:
+                30px;
+        }
+
+
+        .container {
+
+            max-width:
+                1100px;
+
+            margin:
+                auto;
+        }
+
+
+        /* ==============================
+           HEADER
+        ============================== */
+
+        .header {
+
+            text-align:
+                center;
+
+            margin-bottom:
+                35px;
+        }
+
+
+        .header h1 {
+
+            font-size:
+                36px;
+
+            margin-bottom:
+                10px;
+        }
+
+
+        .header p {
+
+            color:
+                #9ca3af;
+
+            font-size:
+                15px;
+        }
+
+
+        /* ==============================
+           NAVIGATION
+        ============================== */
+
+        .navigation {
+
+            display:
+                flex;
+
+            justify-content:
+                center;
+
+            gap:
+                12px;
+
+            margin-bottom:
+                25px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .nav-button {
+
+            text-decoration:
+                none;
+
+            color:
+                #ffffff;
+
+            background:
+                #1f2937;
+
+            border:
+                1px solid #374151;
+
+            padding:
+                10px 18px;
+
+            border-radius:
+                8px;
+
+            transition:
+                0.2s;
+        }
+
+
+        .nav-button:hover {
+
+            background:
+                #374151;
+        }
+
+
+        /* ==============================
+           ANALYZER CARD
+        ============================== */
+
+        .analyzer-card {
+
+            background:
+                #171a23;
+
+            border:
+                1px solid #292e3a;
+
+            border-radius:
+                14px;
+
+            padding:
+                30px;
+
+            margin-bottom:
+                25px;
+        }
+
+
+        .input-label {
+
+            display:
+                block;
+
+            color:
+                #d1d5db;
+
+            margin-bottom:
+                8px;
+
+            font-size:
+                14px;
+
+            font-weight:
+                600;
+        }
+
+
+        .input-row {
+
+            display:
+                flex;
+
+            gap:
+                12px;
+        }
+
+
+        #indicator {
+
+            flex:
+                1;
+
+            padding:
+                14px 16px;
+
+            border:
+                1px solid #374151;
+
+            border-radius:
+                8px;
+
+            background:
+                #111827;
+
+            color:
+                #ffffff;
+
+            outline:
+                none;
+
+            font-size:
+                15px;
+        }
+
+
+        #indicator:focus {
+
+            border-color:
+                #2563eb;
+        }
+
+
+        #analyzeButton {
+
+            padding:
+                14px 24px;
+
+            border:
+                none;
+
+            border-radius:
+                8px;
+
+            background:
+                #2563eb;
+
+            color:
+                #ffffff;
+
+            cursor:
+                pointer;
+
+            font-size:
+                15px;
+
+            font-weight:
+                600;
+        }
+
+
+        #analyzeButton:hover {
+
+            background:
+                #1d4ed8;
+        }
+
+
+        #analyzeButton:disabled {
+
+            opacity:
+                0.6;
+
+            cursor:
+                not-allowed;
+        }
+
+
+        /* ==============================
+           MESSAGE
+        ============================== */
+
+        #message {
+
+            margin-top:
+                15px;
+
+            padding:
+                12px;
+
+            border-radius:
+                8px;
+
+            display:
+                none;
+
+            color:
+                #d1d5db;
+
+            background:
+                #111827;
+        }
+
+
+        /* ==============================
+           RESULT
+        ============================== */
+
+        #result {
+
+            display:
+                none;
+        }
+
+
+        .result-card {
+
+            background:
+                #171a23;
+
+            border:
+                1px solid #292e3a;
+
+            border-radius:
+                14px;
+
+            padding:
+                30px;
+        }
+
+
+        .result-header {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                20px;
+
+            flex-wrap:
+                wrap;
+
+            margin-bottom:
+                25px;
+        }
+
+
+        .result-title {
+
+            font-size:
+                22px;
+        }
+
+
+        .threat-badge {
+
+            padding:
+                8px 18px;
+
+            border-radius:
+                25px;
+
+            font-weight:
+                bold;
+
+            font-size:
+                14px;
+        }
+
+
+        .critical {
+
+            background:
+                #7f1d1d;
+
+            color:
+                #fecaca;
+        }
+
+
+        .high {
+
+            background:
+                #78350f;
+
+            color:
+                #fed7aa;
+        }
+
+
+        .medium {
+
+            background:
+                #713f12;
+
+            color:
+                #fef08a;
+        }
+
+
+        .low {
+
+            background:
+                #14532d;
+
+            color:
+                #bbf7d0;
+        }
+
+
+        .unknown {
+
+            background:
+                #374151;
+
+            color:
+                #d1d5db;
+        }
+
+
+        /* ==============================
+           RESULT GRID
+        ============================== */
+
+        .result-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap:
+                15px;
+        }
+
+
+        .result-item {
+
+            background:
+                #111827;
+
+            border:
+                1px solid #293241;
+
+            border-radius:
+                9px;
+
+            padding:
+                16px;
+        }
+
+
+        .result-label {
+
+            color:
+                #9ca3af;
+
+            font-size:
+                13px;
+
+            margin-bottom:
+                7px;
+        }
+
+
+        .result-value {
+
+            font-size:
+                16px;
+
+            word-break:
+                break-word;
+        }
+
+
+        /* ==============================
+           ANALYSIS STATISTICS
+        ============================== */
+
+        .statistics {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap:
+                12px;
+
+            margin-top:
+                25px;
+        }
+
+
+        .stat {
+
+            background:
+                #111827;
+
+            border:
+                1px solid #293241;
+
+            border-radius:
+                9px;
+
+            padding:
+                18px;
+
+            text-align:
+                center;
+        }
+
+
+        .stat-number {
+
+            font-size:
+                28px;
+
+            font-weight:
+                bold;
+
+            margin-bottom:
+                5px;
+        }
+
+
+        .stat-label {
+
+            color:
+                #9ca3af;
+
+            font-size:
+                12px;
+        }
+
+
+        /* ==============================
+           DETAILS BUTTON
+        ============================== */
+
+        .details-button-container {
+
+            margin-top:
+                25px;
+
+            display:
+                flex;
+
+            gap:
+                12px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .details-button {
+
+            display:
+                inline-block;
+
+            padding:
+                12px 20px;
+
+            background:
+                #2563eb;
+
+            color:
+                #ffffff;
+
+            text-decoration:
+                none;
+
+            border-radius:
+                8px;
+
+            font-weight:
+                600;
+
+            transition:
+                0.2s;
+        }
+
+
+        .details-button:hover {
+
+            background:
+                #1d4ed8;
+        }
+
+
+        .history-button {
+
+            display:
+                inline-block;
+
+            padding:
+                12px 20px;
+
+            background:
+                #374151;
+
+            color:
+                #ffffff;
+
+            text-decoration:
+                none;
+
+            border-radius:
+                8px;
+
+            font-weight:
+                600;
+
+            transition:
+                0.2s;
+        }
+
+
+        .history-button:hover {
+
+            background:
+                #4b5563;
+        }
+
+
+        /* ==============================
+           URL FIELDS
+        ============================== */
+
+        #urlFields {
+
+            display:
+                none;
+        }
+
+
+        #ipFields {
+
+            display:
+                none;
+        }
+
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 700px) {
+
+            body {
+                padding:
+                    15px;
+            }
+
+
+            .header h1 {
+                font-size:
+                    28px;
+            }
+
+
+            .input-row {
+
+                flex-direction:
+                    column;
+            }
+
+
+            .result-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .statistics {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ==============================
+         HEADER
+    ============================== -->
+
+    <div class="header">
+
+        <h1>
+            🛡️ Cyber Threat Analyzer
+        </h1>
+
+        <p>
+            Analyze IP addresses and website URLs
+            using threat intelligence data.
+        </p>
+
+    </div>
+
+
+    <!-- ==============================
+         NAVIGATION
+    ============================== -->
+
+    <div class="navigation">
+
+        <a
+            href="/"
+            class="nav-button"
+        >
+            🏠 Home
+        </a>
+
+
+        <a
+            href="/threat/history"
+            class="nav-button"
+        >
+            📋 Analysis History
+        </a>
+
+    </div>
+
+
+    <!-- ==============================
+         ANALYZER
+    ============================== -->
+
+    <div class="analyzer-card">
+
+        <label
+            for="indicator"
+            class="input-label"
+        >
+            IP Address or Website URL
+        </label>
+
+
+        <div class="input-row">
+
+            <input
+                type="text"
+                id="indicator"
+                placeholder="Example: 8.8.8.8 or https://example.com"
+            >
+
+
+            <button
+                id="analyzeButton"
+                onclick="analyzeThreat()"
+            >
+                🔍 Analyze
+            </button>
+
+        </div>
+
+
+        <div id="message"></div>
+
+    </div>
+
+
+    <!-- ==============================
+         RESULT
+    ============================== -->
+
+    <div id="result">
+
+        <div class="result-card">
+
+
+            <div class="result-header">
+
+                <div class="result-title">
+                    Analysis Result
+                </div>
+
+
+                <div
+                    id="threatLevel"
+                    class="threat-badge unknown"
+                >
+                    UNKNOWN
+                </div>
+
+            </div>
+
+
+            <!-- GENERAL INFORMATION -->
+
+            <div class="result-grid">
+
+
+                <div class="result-item">
+
+                    <div class="result-label">
+                        Type
+                    </div>
+
+                    <div
+                        id="type"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <div class="result-label">
+                        Indicator
+                    </div>
+
+                    <div
+                        id="indicatorResult"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="result-item"
+                    id="countryBox"
+                >
+
+                    <div class="result-label">
+                        Country
+                    </div>
+
+                    <div
+                        id="country"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="result-item"
+                    id="continentBox"
+                >
+
+                    <div class="result-label">
+                        Continent
+                    </div>
+
+                    <div
+                        id="continent"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="result-item"
+                    id="organizationBox"
+                >
+
+                    <div class="result-label">
+                        Organization
+                    </div>
+
+                    <div
+                        id="organization"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="result-item"
+                    id="asnBox"
+                >
+
+                    <div class="result-label">
+                        ASN
+                    </div>
+
+                    <div
+                        id="asn"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="result-item"
+                    id="titleBox"
+                >
+
+                    <div class="result-label">
+                        Website Title
+                    </div>
+
+                    <div
+                        id="title"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="result-item"
+                    id="finalUrlBox"
+                >
+
+                    <div class="result-label">
+                        Final URL
+                    </div>
+
+                    <div
+                        id="finalUrl"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <div class="result-label">
+                        Reputation
+                    </div>
+
+                    <div
+                        id="reputation"
+                        class="result-value"
+                    >
+                        -
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==============================
+                 VIRUSTOTAL STATISTICS
+            ============================== -->
+
+            <div class="statistics">
+
+
+                <div class="stat">
+
+                    <div
+                        id="malicious"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="stat-label">
+                        Malicious
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div
+                        id="suspicious"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="stat-label">
+                        Suspicious
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div
+                        id="harmless"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="stat-label">
+                        Harmless
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div
+                        id="undetected"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="stat-label">
+                        Undetected
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- ==============================
+                 NAVIGATION BUTTONS
+            ============================== -->
+
+            <div class="details-button-container">
+
+
+                <a
+                    id="detailsButton"
+                    href="#"
+                    class="details-button"
+                    style="display: none;"
+                >
+                    🔎 View Full Details
+                </a>
+
+
+                <a
+                    href="/threat/history"
+                    class="history-button"
+                >
+                    📋 View Analysis History
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    // ==================================================
+    // ANALYZE THREAT
+    // ==================================================
+
+    async function analyzeThreat() {
+
+
+        const indicatorInput =
+            document.getElementById(
+                "indicator"
+            );
+
+
+        const analyzeButton =
+            document.getElementById(
+                "analyzeButton"
+            );
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        const result =
+            document.getElementById(
+                "result"
+            );
+
+
+        const detailsButton =
+            document.getElementById(
+                "detailsButton"
+            );
+
+
+        const indicator =
+            indicatorInput.value.trim();
+
+
+        // --------------------------------------------------
+        // VALIDATE INPUT
+        // --------------------------------------------------
+
+        if (!indicator) {
+
+            showMessage(
+                "Please enter an IP address or URL.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        // --------------------------------------------------
+        // RESET UI
+        // --------------------------------------------------
+
+        result.style.display =
+            "none";
+
+
+        detailsButton.style.display =
+            "none";
+
+
+        analyzeButton.disabled =
+            true;
+
+
+        analyzeButton.textContent =
+            "⏳ Analyzing...";
+
+
+        showMessage(
+            "Analyzing indicator...",
+            false
+        );
+
+
+        try {
+
+
+            // --------------------------------------------------
+            // SEND REQUEST TO FLASK
+            // --------------------------------------------------
+
+            const response =
+                await fetch(
+                    "/threat/analyze",
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                indicator:
+                                    indicator
+                            })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            // --------------------------------------------------
+            // ERROR
+            // --------------------------------------------------
+
+            if (!response.ok ||
+                !data.success) {
+
+                throw new Error(
+                    data.error ||
+                    "Threat analysis failed."
+                );
+
+            }
+
+
+            // --------------------------------------------------
+            // GET RESULT
+            // --------------------------------------------------
+
+            const threat =
+                data.result;
+
+
+            // --------------------------------------------------
+            // SHOW RESULT
+            // --------------------------------------------------
+
+            displayResult(
+                threat
+            );
+
+
+            // --------------------------------------------------
+            // CONNECT TO DETAILS PAGE
+            // --------------------------------------------------
+
+            if (
+                threat &&
+                threat.indicator
+            ) {
+
+                detailsButton.href =
+                    "/threat/details/view/" +
+                    encodeURIComponent(
+                        threat.indicator
+                    );
+
+
+                detailsButton.style.display =
+                    "inline-block";
+
+            }
+
+
+            // --------------------------------------------------
+            // MESSAGE
+            // --------------------------------------------------
+
+            if (
+                data.source ===
+                "mongodb"
+            ) {
+
+                showMessage(
+                    "Result loaded from MongoDB cache.",
+                    false
+                );
+
+            }
+            else {
+
+                showMessage(
+                    "Analysis completed using VirusTotal and saved to MongoDB.",
+                    false
+                );
+
+            }
+
+
+        }
+        catch (error) {
+
+
+            console.error(
+                "Analysis error:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Something went wrong.",
+                true
+            );
+
+
+        }
+        finally {
+
+
+            analyzeButton.disabled =
+                false;
+
+
+            analyzeButton.textContent =
+                "🔍 Analyze";
+
+        }
+
+    }
+
+
+    // ==================================================
+    // DISPLAY RESULT
+    // ==================================================
+
+    function displayResult(
+        threat
+    ) {
+
+
+        const result =
+            document.getElementById(
+                "result"
+            );
+
+
+        result.style.display =
+            "block";
+
+
+        // --------------------------------------------------
+        // BASIC INFORMATION
+        // --------------------------------------------------
+
+        document.getElementById(
+            "type"
+        ).textContent =
+            threat.type ||
+            "-";
+
+
+        document.getElementById(
+            "indicatorResult"
+        ).textContent =
+            threat.indicator ||
+            "-";
+
+
+        document.getElementById(
+            "country"
+        ).textContent =
+            threat.country ||
+            "-";
+
+
+        document.getElementById(
+            "continent"
+        ).textContent =
+            threat.continent ||
+            "-";
+
+
+        document.getElementById(
+            "organization"
+        ).textContent =
+            threat.as_owner ||
+            "-";
+
+
+        document.getElementById(
+            "asn"
+        ).textContent =
+            threat.asn ||
+            "-";
+
+
+        document.getElementById(
+            "title"
+        ).textContent =
+            threat.title ||
+            "-";
+
+
+        document.getElementById(
+            "finalUrl"
+        ).textContent =
+            threat.last_final_url ||
+            "-";
+
+
+        document.getElementById(
+            "reputation"
+        ).textContent =
+            threat.reputation ??
+            "-";
+
+
+        // --------------------------------------------------
+        // STATISTICS
+        // --------------------------------------------------
+
+        document.getElementById(
+            "malicious"
+        ).textContent =
+            threat.malicious ??
+            0;
+
+
+        document.getElementById(
+            "suspicious"
+        ).textContent =
+            threat.suspicious ??
+            0;
+
+
+        document.getElementById(
+            "harmless"
+        ).textContent =
+            threat.harmless ??
+            0;
+
+
+        document.getElementById(
+            "undetected"
+        ).textContent =
+            threat.undetected ??
+            0;
+
+
+        // --------------------------------------------------
+        // THREAT LEVEL
+        // --------------------------------------------------
+
+        const threatLevel =
+            document.getElementById(
+                "threatLevel"
+            );
+
+
+        const level =
+            (
+                threat.threat_level ||
+                "UNKNOWN"
+            ).toUpperCase();
+
+
+        threatLevel.textContent =
+            level;
+
+
+        threatLevel.className =
+            "threat-badge " +
+            level.toLowerCase();
+
+
+        // --------------------------------------------------
+        // SHOW/HIDE IP FIELDS
+        // --------------------------------------------------
+
+        const type =
+            (
+                threat.type ||
+                ""
+            ).toUpperCase();
+
+
+        if (type === "IP") {
+
+            document.getElementById(
+                "countryBox"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "continentBox"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "organizationBox"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "asnBox"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "titleBox"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "finalUrlBox"
+            ).style.display =
+                "none";
+
+        }
+
+
+        // --------------------------------------------------
+        // SHOW/HIDE URL FIELDS
+        // --------------------------------------------------
+
+        else if (type === "URL") {
+
+            document.getElementById(
+                "countryBox"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "continentBox"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "organizationBox"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "asnBox"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "titleBox"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "finalUrlBox"
+            ).style.display =
+                "block";
+
+        }
+
+    }
+
+
+    // ==================================================
+    // SHOW MESSAGE
+    // ==================================================
+
+    function showMessage(
+        text,
+        isError
+    ) {
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        message.textContent =
+            text;
+
+
+        message.style.display =
+            "block";
+
+
+        if (isError) {
+
+            message.style.background =
+                "#3f1d1d";
+
+            message.style.color =
+                "#fecaca";
+
+        }
+        else {
+
+            message.style.background =
+                "#111827";
+
+            message.style.color =
+                "#d1d5db";
+
+        }
+
+    }
+
+
+    // ==================================================
+    // ENTER KEY
+    // ==================================================
+
+    document
+        .getElementById(
+            "indicator"
+        )
+        .addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key ===
+                    "Enter"
+                ) {
+
+                    analyzeThreat();
+
+                }
+
+            }
+        );
+
+
+</script>
+
+
+</body>
+
+</html>

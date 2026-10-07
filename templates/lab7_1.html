@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+
+    <title>Lab 7.1 | CTI MongoDB Lab</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #080b12;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+
+        /* ---------------- NAVBAR ---------------- */
+
+        nav {
+            height: 72px;
+            padding: 0 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom: 1px solid #1f2937;
+            background: #0b101a;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+        }
+
+        nav a {
+            color: #93c5fd;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+
+        /* ---------------- MAIN CONTAINER ---------------- */
+
+        .container {
+            width: 86%;
+            max-width: 1200px;
+
+            margin: 55px auto;
+        }
+
+
+        /* ---------------- BREADCRUMB ---------------- */
+
+        .breadcrumb {
+            color: #6b7280;
+            font-size: 13px;
+
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb a {
+            color: #93c5fd;
+            text-decoration: none;
+        }
+
+
+        /* ---------------- HEADING ---------------- */
+
+        .heading {
+            margin-bottom: 35px;
+        }
+
+        .tag {
+            display: inline-block;
+
+            padding: 7px 13px;
+
+            border: 1px solid #26344d;
+            border-radius: 20px;
+
+            color: #93c5fd;
+
+            background: rgba(37, 99, 235, 0.08);
+
+            font-size: 12px;
+
+            margin-bottom: 17px;
+        }
+
+        h1 {
+            font-size: clamp(32px, 5vw, 48px);
+
+            letter-spacing: -1px;
+
+            margin-bottom: 12px;
+        }
+
+        .gradient {
+            background: linear-gradient(
+                90deg,
+                #60a5fa,
+                #a78bfa
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+
+            line-height: 1.7;
+
+            max-width: 750px;
+        }
+
+
+        /* ---------------- SECTION TITLE ---------------- */
+
+        .section-title {
+            font-size: 20px;
+
+            margin: 35px 0 18px;
+        }
+
+
+        /* ---------------- OVERVIEW CARDS ---------------- */
+
+        .cards {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+        }
+
+        .card {
+            background: #111827;
+
+            border: 1px solid #273244;
+
+            border-radius: 15px;
+
+            padding: 23px;
+
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+
+            border-color: #3b82f6;
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+
+            background: rgba(
+                37,
+                99,
+                235,
+                0.15
+            );
+
+            color: #60a5fa;
+
+            font-size: 21px;
+
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            font-size: 17px;
+
+            margin-bottom: 9px;
+        }
+
+        .card p {
+            color: #9ca3af;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+
+        /* ---------------- ACTION BUTTONS ---------------- */
+
+        .actions {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 25px;
+        }
+
+        button {
+            border: 0;
+
+            border-radius: 9px;
+
+            padding: 13px 18px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+
+            transform: translateY(-2px);
+        }
+
+        button.secondary {
+            background: #273244;
+        }
+
+        button.secondary:hover {
+            background: #374151;
+        }
+
+
+        /* ---------------- RESULT PANEL ---------------- */
+
+        .result-panel {
+            margin-top: 25px;
+
+            padding: 23px;
+
+            border: 1px solid #273244;
+
+            border-radius: 14px;
+
+            background: #0f1724;
+
+            overflow: hidden;
+        }
+
+        .result-panel h3 {
+            margin-bottom: 15px;
+        }
+
+        #result {
+            color: #9ca3af;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+
+            overflow-x: auto;
+        }
+
+
+        /* ---------------- RESULT CARDS ---------------- */
+
+        .stat-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(180px, 1fr)
+                );
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #111827;
+
+            border: 1px solid #273244;
+
+            padding: 18px;
+
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+
+            font-size: 12px;
+
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+
+            font-weight: 700;
+
+            margin-top: 8px;
+        }
+
+        .blue-value {
+            color: #60a5fa;
+        }
+
+        .green-value {
+            color: #4ade80;
+        }
+
+        .purple-value {
+            color: #a78bfa;
+        }
+
+
+        /* ---------------- DOCUMENT CARDS ---------------- */
+
+        .document-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(250px, 1fr)
+                );
+
+            gap: 15px;
+        }
+
+        .document-card {
+            background: #111827;
+
+            border: 1px solid #273244;
+
+            border-radius: 12px;
+
+            padding: 18px;
+        }
+
+        .document-number {
+            color: #60a5fa;
+
+            font-size: 12px;
+
+            margin-bottom: 8px;
+
+            font-weight: 600;
+        }
+
+        .document-card h3 {
+            margin-bottom: 10px;
+
+            color: #f3f4f6;
+        }
+
+        .document-info {
+            color: #9ca3af;
+
+            font-size: 13px;
+
+            line-height: 1.8;
+        }
+
+
+        /* ---------------- TABLE ---------------- */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            font-size: 13px;
+        }
+
+        th {
+            color: #9ca3af;
+
+            text-align: left;
+
+            padding: 12px;
+
+            border-bottom: 1px solid #273244;
+        }
+
+        td {
+            padding: 12px;
+
+            border-bottom: 1px solid #1f2937;
+
+            color: #d1d5db;
+        }
+
+        .size-value {
+            color: #60a5fa;
+
+            font-weight: 600;
+        }
+
+
+        /* ---------------- LIMIT BOX ---------------- */
+
+        .limit-box {
+            margin-top: 25px;
+
+            padding: 16px;
+
+            border-radius: 10px;
+
+            background: rgba(
+                37,
+                99,
+                235,
+                0.08
+            );
+
+            border: 1px solid #26344d;
+        }
+
+        .limit-title {
+            font-weight: 600;
+
+            color: #e5e7eb;
+        }
+
+        .limit-text {
+            color: #9ca3af;
+
+            margin-top: 7px;
+        }
+
+
+        /* ---------------- SIMULATION ---------------- */
+
+        .simulation-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(200px, 1fr)
+                );
+
+            gap: 15px;
+        }
+
+        .simulation-card {
+            background: #111827;
+
+            border: 1px solid #273244;
+
+            border-radius: 12px;
+
+            padding: 20px;
+        }
+
+        .simulation-label {
+            color: #6b7280;
+
+            font-size: 12px;
+        }
+
+        .simulation-number {
+            font-size: 25px;
+
+            font-weight: 700;
+
+            margin: 6px 0 15px;
+        }
+
+        .simulation-size {
+            color: #60a5fa;
+
+            font-weight: 600;
+
+            margin-top: 5px;
+        }
+
+        .within-limit {
+            color: #4ade80;
+
+            font-weight: 600;
+
+            margin-top: 15px;
+        }
+
+        .exceeds-limit {
+            color: #f87171;
+
+            font-weight: 600;
+
+            margin-top: 15px;
+        }
+
+
+        /* ---------------- LOADING ---------------- */
+
+        .loading {
+            color: #60a5fa;
+
+            padding: 15px 0;
+        }
+
+        .error {
+            color: #f87171;
+
+            background: rgba(
+                248,
+                113,
+                113,
+                0.08
+            );
+
+            border: 1px solid rgba(
+                248,
+                113,
+                113,
+                0.2
+            );
+
+            padding: 15px;
+
+            border-radius: 8px;
+        }
+
+
+        /* ---------------- FOOTER ---------------- */
+
+        footer {
+            border-top: 1px solid #1f2937;
+
+            padding: 25px 7%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            color: #6b7280;
+
+            font-size: 12px;
+
+            margin-top: 70px;
+        }
+
+
+        /* ---------------- RESPONSIVE ---------------- */
+
+        @media (max-width: 800px) {
+
+            .cards,
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 90%;
+            }
+
+            footer {
+                flex-direction: column;
+
+                gap: 8px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav>
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                ◈
+            </div>
+
+            CTI MongoDB Lab
+
+        </div>
+
+        <a href="/">
+            ← Back to Dashboard
+        </a>
+
+    </nav>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="container">
+
+
+        <!-- Breadcrumb -->
+
+        <div class="breadcrumb">
+
+            <a href="/">
+                Dashboard
+            </a>
+
+            /
+
+            Lab 7.1
+
+        </div>
+
+
+        <!-- Heading -->
+
+        <section class="heading">
+
+            <div class="tag">
+                LABORATORY 07.1
+            </div>
+
+            <h1>
+
+                Schema Design &
+
+                <span class="gradient">
+                    BSON Analysis
+                </span>
+
+            </h1>
+
+            <p class="subtitle">
+
+                Explore MongoDB document structures,
+                embedded comments, BSON document sizes
+                and the 16 MiB document size limit.
+
+            </p>
+
+        </section>
+
+
+        <!-- ================= OVERVIEW ================= -->
+
+        <h2 class="section-title">
+            Experiment Overview
+        </h2>
+
+
+        <section class="cards">
+
+
+            <!-- Document Analysis -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    ▤
+                </div>
+
+                <h3>
+                    Document Analysis
+                </h3>
+
+                <p>
+                    View blog posts and inspect their
+                    embedded document structure.
+                </p>
+
+            </div>
+
+
+            <!-- BSON -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    ◫
+                </div>
+
+                <h3>
+                    BSON Size Analysis
+                </h3>
+
+                <p>
+                    Calculate document sizes and examine
+                    average, minimum and maximum BSON sizes.
+                </p>
+
+            </div>
+
+
+            <!-- Limit -->
+
+            <div class="card">
+
+                <div class="card-icon">
+                    ⚠
+                </div>
+
+                <h3>
+                    Document Size Limit
+                </h3>
+
+                <p>
+                    Simulate document growth and check
+                    the MongoDB 16 MiB size limit.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ================= ACTIONS ================= -->
+
+        <h2 class="section-title">
+            Run Experiments
+        </h2>
+
+
+        <section class="actions">
+
+            <button onclick="loadData()">
+                View Documents
+            </button>
+
+            <button onclick="analyzeData()">
+                Analyze BSON Size
+            </button>
+
+            <button
+                class="secondary"
+                onclick="simulateData()"
+            >
+                Run Size Simulation
+            </button>
+
+        </section>
+
+
+        <!-- ================= RESULTS ================= -->
+
+        <section class="result-panel">
+
+            <h3>
+                Experiment Results
+            </h3>
+
+            <div id="result">
+
+                Select an experiment above
+                to display its results here.
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <span>
+            CTI MongoDB Laboratory
+        </span>
+
+        <span>
+            NoSQL Database Systems
+        </span>
+
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+
+        /* =====================================================
+           VIEW DOCUMENTS
+        ===================================================== */
+
+        async function loadData() {
+
+            const resultBox =
+                document.getElementById("result");
+
+            resultBox.innerHTML = `
+                <div class="loading">
+                    Loading documents...
+                </div>
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/lab7.1/data"
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!data.success) {
+
+                    resultBox.innerHTML = `
+                        <div class="error">
+                            Error:
+                            ${data.error}
+                        </div>
+                    `;
+
+                    return;
+                }
+
+
+                let html = `
+
+                    <div style="
+                        margin-bottom:20px;
+                    ">
+
+                        <strong>
+                            Total Documents:
+                        </strong>
+
+                        ${data.count}
+
+                    </div>
+
+
+                    <div class="document-grid">
+
+                `;
+
+
+                data.data.forEach(
+                    (doc, index) => {
+
+                        html += `
+
+                            <div
+                                class="document-card"
+                            >
+
+                                <div
+                                    class="document-number"
+                                >
+                                    DOCUMENT
+                                    ${index + 1}
+                                </div>
+
+
+                                <h3>
+                                    ${
+                                        doc.title ||
+                                        "Untitled"
+                                    }
+                                </h3>
+
+
+                                <div
+                                    class="document-info"
+                                >
+
+                                    <div>
+                                        <strong>
+                                            Author:
+                                        </strong>
+
+                                        ${
+                                            doc.author ||
+                                            "Unknown"
+                                        }
+                                    </div>
+
+
+                                    <div>
+                                        <strong>
+                                            Category:
+                                        </strong>
+
+                                        ${
+                                            doc.category ||
+                                            "Unknown"
+                                        }
+                                    </div>
+
+
+                                    <div>
+                                        <strong>
+                                            Comments:
+                                        </strong>
+
+                                        ${
+                                            (
+                                                doc.comments ||
+                                                []
+                                            ).length
+                                        }
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        `;
+                    }
+                );
+
+
+                html += `
+                    </div>
+                `;
+
+
+                resultBox.innerHTML =
+                    html;
+
+
+            } catch (error) {
+
+                resultBox.innerHTML = `
+
+                    <div class="error">
+
+                        Error:
+                        ${error.message}
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           BSON ANALYSIS
+        ===================================================== */
+
+        async function analyzeData() {
+
+            const resultBox =
+                document.getElementById("result");
+
+
+            resultBox.innerHTML = `
+
+                <div class="loading">
+                    Analyzing BSON document sizes...
+                </div>
+
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/lab7.1/analyze",
+                        {
+                            method: "POST"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!data.success) {
+
+                    resultBox.innerHTML = `
+
+                        <div class="error">
+
+                            Error:
+                            ${data.error}
+
+                        </div>
+
+                    `;
+
+                    return;
+                }
+
+
+                const stats =
+                    data.size_statistics;
+
+
+                const comments =
+                    data.comment_statistics;
+
+
+                /* =============================
+                   SIZE STATISTICS
+                ============================= */
+
+                let html = `
+
+                    <div class="stat-grid">
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-label">
+                                AVERAGE BSON SIZE
+                            </div>
+
+                            <div
+                                class="
+                                    stat-value
+                                    blue-value
+                                "
+                            >
+                                ${
+                                    formatBytes(
+                                        stats.average
+                                    )
+                                }
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-label">
+                                MINIMUM BSON SIZE
+                            </div>
+
+                            <div
+                                class="
+                                    stat-value
+                                    green-value
+                                "
+                            >
+                                ${
+                                    formatBytes(
+                                        stats.minimum
+                                    )
+                                }
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-label">
+                                MAXIMUM BSON SIZE
+                            </div>
+
+                            <div
+                                class="
+                                    stat-value
+                                    purple-value
+                                "
+                            >
+                                ${
+                                    formatBytes(
+                                        stats.maximum
+                                    )
+                                }
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- COMMENT STATISTICS -->
+
+                    <h3
+                        style="
+                            margin-bottom:15px;
+                        "
+                    >
+                        Comment Statistics
+                    </h3>
+
+
+                    <div
+                        class="stat-grid"
+                    >
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-label">
+                                AVERAGE COMMENTS
+                            </div>
+
+                            <div
+                                class="
+                                    stat-value
+                                    blue-value
+                                "
+                            >
+                                ${
+                                    comments.average_comments
+                                    .toFixed(2)
+                                }
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-label">
+                                MINIMUM COMMENTS
+                            </div>
+
+                            <div
+                                class="
+                                    stat-value
+                                    green-value
+                                "
+                            >
+                                ${
+                                    comments.minimum_comments
+                                }
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat-card">
+
+                            <div class="stat-label">
+                                MAXIMUM COMMENTS
+                            </div>
+
+                            <div
+                                class="
+                                    stat-value
+                                    purple-value
+                                "
+                            >
+                                ${
+                                    comments.maximum_comments
+                                }
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- DOCUMENT TABLE -->
+
+                    <h3
+                        style="
+                            margin:25px 0 15px;
+                        "
+                    >
+                        Document BSON Sizes
+                    </h3>
+
+
+                    <div
+                        class="table-container"
+                    >
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Document
+                                    </th>
+
+                                    <th>
+                                        Comments
+                                    </th>
+
+                                    <th>
+                                        BSON Size
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                `;
+
+
+                data.documents.forEach(
+                    doc => {
+
+                        html += `
+
+                            <tr>
+
+                                <td>
+                                    ${
+                                        doc.title
+                                    }
+                                </td>
+
+
+                                <td>
+                                    ${
+                                        doc.comments
+                                    }
+                                </td>
+
+
+                                <td
+                                    class="size-value"
+                                >
+                                    ${
+                                        formatBytes(
+                                            doc.bson_size
+                                        )
+                                    }
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }
+                );
+
+
+                html += `
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- LIMIT -->
+
+                    <div class="limit-box">
+
+                        <div class="limit-title">
+
+                            MongoDB Document Size Limit
+
+                        </div>
+
+
+                        <div class="limit-text">
+
+                            Maximum BSON document size:
+
+                            <strong
+                                style="
+                                    color:#e5e7eb;
+                                "
+                            >
+                                16 MiB
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                resultBox.innerHTML =
+                    html;
+
+
+            } catch (error) {
+
+                resultBox.innerHTML = `
+
+                    <div class="error">
+
+                        Error:
+                        ${error.message}
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           SIZE SIMULATION
+        ===================================================== */
+
+        async function simulateData() {
+
+            const resultBox =
+                document.getElementById("result");
+
+
+            resultBox.innerHTML = `
+
+                <div class="loading">
+
+                    Running BSON growth simulation...
+
+                </div>
+
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/lab7.1/simulate",
+                        {
+                            method: "POST"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!data.success) {
+
+                    resultBox.innerHTML = `
+
+                        <div class="error">
+
+                            Error:
+                            ${data.error}
+
+                        </div>
+
+                    `;
+
+                    return;
+                }
+
+
+                let html = `
+
+                    <h3
+                        style="
+                            margin-bottom:18px;
+                        "
+                    >
+                        BSON Growth Simulation
+                    </h3>
+
+
+                    <div
+                        class="simulation-grid"
+                    >
+
+                `;
+
+
+                data.results.forEach(
+                    item => {
+
+                        html += `
+
+                            <div
+                                class="
+                                    simulation-card
+                                "
+                            >
+
+                                <div
+                                    class="
+                                        simulation-label
+                                    "
+                                >
+                                    COMMENTS
+                                </div>
+
+
+                                <div
+                                    class="
+                                        simulation-number
+                                    "
+                                >
+                                    ${
+                                        item.comments
+                                        .toLocaleString()
+                                    }
+                                </div>
+
+
+                                <div
+                                    class="
+                                        simulation-label
+                                    "
+                                >
+                                    BSON SIZE
+                                </div>
+
+
+                                <div
+                                    class="
+                                        simulation-size
+                                    "
+                                >
+                                    ${
+                                        formatBytes(
+                                            item.bson_size
+                                        )
+                                    }
+                                </div>
+
+
+                                <div
+                                    class="${
+                                        item.exceeds_16_mib
+                                        ? "exceeds-limit"
+                                        : "within-limit"
+                                    }"
+                                >
+
+                                    ${
+                                        item.exceeds_16_mib
+                                        ? "⚠ Exceeds 16 MiB"
+                                        : "✓ Within Limit"
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                );
+
+
+                html += `
+
+                    </div>
+
+                `;
+
+
+                resultBox.innerHTML =
+                    html;
+
+
+            } catch (error) {
+
+                resultBox.innerHTML = `
+
+                    <div class="error">
+
+                        Error:
+                        ${error.message}
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           BYTE FORMATTER
+        ===================================================== */
+
+        function formatBytes(bytes) {
+
+            if (bytes === 0) {
+                return "0 Bytes";
+            }
+
+
+            if (bytes < 1024) {
+                return (
+                    bytes.toFixed(0) +
+                    " B"
+                );
+            }
+
+
+            if (bytes < 1024 * 1024) {
+
+                return (
+                    (bytes / 1024)
+                    .toFixed(2) +
+                    " KB"
+                );
+
+            }
+
+
+            return (
+                (bytes / (1024 * 1024))
+                .toFixed(2) +
+                " MB"
+            );
+
+        }
+
+    </script>
+
+</body>
+
+</html>

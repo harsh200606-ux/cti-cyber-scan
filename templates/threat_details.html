@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Threat Details</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #0f1117;
+
+            color:
+                #ffffff;
+
+            min-height:
+                100vh;
+
+            padding:
+                30px;
+        }
+
+
+        .container {
+
+            max-width:
+                1100px;
+
+            margin:
+                auto;
+        }
+
+
+        /* ==============================
+           HEADER
+        ============================== */
+
+        .header {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            gap:
+                15px;
+
+            flex-wrap:
+                wrap;
+
+            margin-bottom:
+                30px;
+        }
+
+
+        h1 {
+
+            font-size:
+                32px;
+
+            margin-bottom:
+                8px;
+        }
+
+
+        .subtitle {
+
+            color:
+                #9ca3af;
+
+            font-size:
+                15px;
+        }
+
+
+        /* ==============================
+           HEADER BUTTON
+        ============================== */
+
+        .back-button {
+
+            text-decoration:
+                none;
+
+            color:
+                white;
+
+            background:
+                #1f2937;
+
+            border:
+                1px solid #374151;
+
+            padding:
+                10px 18px;
+
+            border-radius:
+                8px;
+        }
+
+
+        .back-button:hover {
+
+            background:
+                #374151;
+        }
+
+
+        /* ==============================
+           MAIN CARD
+        ============================== */
+
+        .main-card {
+
+            background:
+                #171a23;
+
+            border:
+                1px solid #292e3a;
+
+            border-radius:
+                14px;
+
+            padding:
+                25px;
+
+            margin-bottom:
+                20px;
+        }
+
+
+        /* ==============================
+           INDICATOR
+        ============================== */
+
+        .indicator-section {
+
+            margin-bottom:
+                25px;
+        }
+
+
+        .label {
+
+            color:
+                #9ca3af;
+
+            font-size:
+                13px;
+
+            margin-bottom:
+                7px;
+        }
+
+
+        .indicator {
+
+            font-size:
+                24px;
+
+            font-weight:
+                bold;
+
+            word-break:
+                break-all;
+        }
+
+
+        /* ==============================
+           THREAT LEVEL
+        ============================== */
+
+        .threat-section {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            background:
+                #111827;
+
+            border-radius:
+                10px;
+
+            padding:
+                20px;
+
+            margin-bottom:
+                25px;
+
+            gap:
+                15px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .threat-title {
+
+            font-size:
+                16px;
+
+            color:
+                #d1d5db;
+        }
+
+
+        .threat-badge {
+
+            padding:
+                8px 18px;
+
+            border-radius:
+                25px;
+
+            font-size:
+                14px;
+
+            font-weight:
+                bold;
+        }
+
+
+        .critical {
+
+            background:
+                #7f1d1d;
+
+            color:
+                #fecaca;
+        }
+
+
+        .high {
+
+            background:
+                #78350f;
+
+            color:
+                #fed7aa;
+        }
+
+
+        .medium {
+
+            background:
+                #713f12;
+
+            color:
+                #fef08a;
+        }
+
+
+        .low {
+
+            background:
+                #14532d;
+
+            color:
+                #bbf7d0;
+        }
+
+
+        .unknown {
+
+            background:
+                #374151;
+
+            color:
+                #d1d5db;
+        }
+
+
+        /* ==============================
+           INFORMATION
+        ============================== */
+
+        .section-title {
+
+            font-size:
+                20px;
+
+            margin-bottom:
+                18px;
+        }
+
+
+        .grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap:
+                15px;
+        }
+
+
+        .info-box {
+
+            background:
+                #111827;
+
+            border:
+                1px solid #293241;
+
+            border-radius:
+                9px;
+
+            padding:
+                16px;
+        }
+
+
+        .value {
+
+            font-size:
+                16px;
+
+            word-break:
+                break-word;
+        }
+
+
+        /* ==============================
+           STATISTICS
+        ============================== */
+
+        .stats-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap:
+                15px;
+        }
+
+
+        .stat {
+
+            background:
+                #111827;
+
+            border-radius:
+                10px;
+
+            padding:
+                20px;
+
+            text-align:
+                center;
+        }
+
+
+        .stat-number {
+
+            font-size:
+                30px;
+
+            font-weight:
+                bold;
+
+            margin-bottom:
+                6px;
+        }
+
+
+        .stat-label {
+
+            color:
+                #9ca3af;
+
+            font-size:
+                13px;
+        }
+
+
+        /* ==============================
+           NAVIGATION BUTTONS
+        ============================== */
+
+        .footer-buttons {
+
+            display:
+                flex;
+
+            gap:
+                12px;
+
+            margin-top:
+                25px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .button {
+
+            text-decoration:
+                none;
+
+            padding:
+                11px 18px;
+
+            border-radius:
+                8px;
+
+            background:
+                #2563eb;
+
+            color:
+                white;
+
+            font-weight:
+                600;
+        }
+
+
+        .button:hover {
+
+            background:
+                #1d4ed8;
+        }
+
+
+        .button.secondary {
+
+            background:
+                #374151;
+        }
+
+
+        .button.secondary:hover {
+
+            background:
+                #4b5563;
+        }
+
+
+        @media (max-width: 700px) {
+
+            body {
+                padding:
+                    15px;
+            }
+
+
+            .grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            h1 {
+
+                font-size:
+                    25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ==============================
+         HEADER
+    ============================== -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>
+                🛡️ Threat Details
+            </h1>
+
+            <p class="subtitle">
+                Detailed threat intelligence information.
+            </p>
+
+        </div>
+
+
+        <a
+            href="/threat/history"
+            class="back-button"
+        >
+            ← Threat History
+        </a>
+
+    </div>
+
+
+    <!-- ==============================
+         MAIN INFORMATION
+    ============================== -->
+
+    <div class="main-card">
+
+
+        <div class="indicator-section">
+
+            <div class="label">
+                INDICATOR
+            </div>
+
+
+            <div class="indicator">
+
+                {{ result.get("indicator", "-") }}
+
+            </div>
+
+        </div>
+
+
+        <!-- THREAT LEVEL -->
+
+        <div class="threat-section">
+
+            <div class="threat-title">
+                Overall Threat Level
+            </div>
+
+
+            {% set level =
+                result.get(
+                    "threat_level",
+                    "UNKNOWN"
+                ).upper()
+            %}
+
+
+            <div
+                class="threat-badge {{ level.lower() }}"
+            >
+
+                {{ level }}
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================
+             BASIC INFORMATION
+        ============================== -->
+
+        <h2 class="section-title">
+            Basic Information
+        </h2>
+
+
+        <div class="grid">
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Type
+                </div>
+
+                <div class="value">
+                    {{ result.get("type", "-") }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="label">
+                    Reputation
+                </div>
+
+                <div class="value">
+                    {{ result.get("reputation", "-") }}
+                </div>
+
+            </div>
+
+
+            {% if result.get("country") %}
+
+            <div class="info-box">
+
+                <div class="label">
+                    Country
+                </div>
+
+                <div class="value">
+                    {{ result.get("country") }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if result.get("continent") %}
+
+            <div class="info-box">
+
+                <div class="label">
+                    Continent
+                </div>
+
+                <div class="value">
+                    {{ result.get("continent") }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if result.get("as_owner") %}
+
+            <div class="info-box">
+
+                <div class="label">
+                    Organization
+                </div>
+
+                <div class="value">
+                    {{ result.get("as_owner") }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if result.get("asn") %}
+
+            <div class="info-box">
+
+                <div class="label">
+                    ASN
+                </div>
+
+                <div class="value">
+                    {{ result.get("asn") }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if result.get("title") %}
+
+            <div class="info-box">
+
+                <div class="label">
+                    Website Title
+                </div>
+
+                <div class="value">
+                    {{ result.get("title") }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if result.get("last_final_url") %}
+
+            <div class="info-box">
+
+                <div class="label">
+                    Final URL
+                </div>
+
+                <div class="value">
+                    {{ result.get("last_final_url") }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if result.get("created_at") %}
+
+            <div class="info-box">
+
+                <div class="label">
+                    First Analyzed
+                </div>
+
+                <div class="value">
+                    {{ result.get("created_at") }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            {% if result.get("updated_at") %}
+
+            <div class="info-box">
+
+                <div class="label">
+                    Last Updated
+                </div>
+
+                <div class="value">
+                    {{ result.get("updated_at") }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ==============================
+         VIRUSTOTAL STATISTICS
+    ============================== -->
+
+    <div class="main-card">
+
+        <h2 class="section-title">
+            VirusTotal Analysis Statistics
+        </h2>
+
+
+        <div class="stats-grid">
+
+
+            <div class="stat">
+
+                <div class="stat-number">
+                    {{ result.get("malicious", 0) }}
+                </div>
+
+                <div class="stat-label">
+                    Malicious
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-number">
+                    {{ result.get("suspicious", 0) }}
+                </div>
+
+                <div class="stat-label">
+                    Suspicious
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-number">
+                    {{ result.get("harmless", 0) }}
+                </div>
+
+                <div class="stat-label">
+                    Harmless
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-number">
+                    {{ result.get("undetected", 0) }}
+                </div>
+
+                <div class="stat-label">
+                    Undetected
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ==============================
+             NAVIGATION
+        ============================== -->
+
+        <div class="footer-buttons">
+
+
+            <a
+                href="/threat/history"
+                class="button secondary"
+            >
+                📋 Threat History
+            </a>
+
+
+            <a
+                href="/threat/"
+                class="button"
+            >
+                🔍 Analyze Another
+            </a>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

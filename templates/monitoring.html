@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+
+    <title>MongoDB Monitoring | CTI Lab</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #07111f;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            height: 70px;
+            background: #0b1728;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        .back {
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: #38bdf8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 45px 25px;
+        }
+
+        .header {
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #94a3b8;
+        }
+
+        .connection-card {
+            background: #0d1b2d;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .connection-card h2 {
+            color: #38bdf8;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            background: #111f33;
+            color: #cbd5e1;
+        }
+
+        .success {
+            color: #4ade80;
+        }
+
+        .error {
+            color: #f87171;
+        }
+
+        .actions {
+            margin-bottom: 30px;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 22px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #0284c7;
+            color: white;
+        }
+
+        button:hover {
+            background: #0369a1;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .metric {
+            background: #0d1b2d;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .metric-title {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .metric-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #f8fafc;
+            word-break: break-word;
+        }
+
+        .loading {
+            color: #facc15;
+        }
+
+        @media (max-width: 800px) {
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .container {
+                padding: 30px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">CTI • MongoDB Lab</div>
+
+        <a href="/" class="back">
+            ← Back to Dashboard
+        </a>
+    </nav>
+
+
+    <main class="container">
+
+        <div class="header">
+            <h1>MongoDB Monitoring</h1>
+
+            <p>
+                Monitor MongoDB connection status and
+                WiredTiger storage engine metrics.
+            </p>
+        </div>
+
+
+        <div class="connection-card">
+
+            <h2>Connection Status</h2>
+
+            <div id="connectionStatus" class="status">
+                Checking MongoDB connection...
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button onclick="loadMonitoring()">
+                Refresh Monitoring
+            </button>
+
+        </div>
+
+
+        <div id="metrics" class="metrics">
+
+            <div class="metric">
+                <div class="metric-title">
+                    Cache Maximum
+                </div>
+
+                <div class="metric-value">
+                    Loading...
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        async function checkConnection() {
+
+            try {
+
+                const response = await fetch(
+                    "/api/status"
+                );
+
+                const data = await response.json();
+
+                const element =
+                    document.getElementById(
+                        "connectionStatus"
+                    );
+
+                if (data.connected) {
+
+                    element.innerHTML = `
+                        <span class="success">
+                            ● Connected
+                        </span>
+                        <br>
+                        ${data.message}
+                    `;
+
+                } else {
+
+                    element.innerHTML = `
+                        <span class="error">
+                            ● Disconnected
+                        </span>
+                        <br>
+                        ${data.message}
+                    `;
+
+                }
+
+            } catch (error) {
+
+                document.getElementById(
+                    "connectionStatus"
+                ).innerHTML = `
+                    <span class="error">
+                        ● Connection Check Failed
+                    </span>
+                    <br>
+                    ${error.message}
+                `;
+
+            }
+        }
+
+
+        async function loadMonitoring() {
+
+            const metricsElement =
+                document.getElementById("metrics");
+
+            metricsElement.innerHTML = `
+                <div class="metric">
+                    <div class="metric-value loading">
+                        Loading monitoring data...
+                    </div>
+                </div>
+            `;
+
+            try {
+
+                const response = await fetch(
+                    "/api/monitoring"
+                );
+
+                const data = await response.json();
+
+                if (!data.success) {
+
+                    metricsElement.innerHTML = `
+                        <div class="metric">
+                            <div class="metric-value error">
+                                Error: ${data.error}
+                            </div>
+                        </div>
+                    `;
+
+                    return;
+                }
+
+                const metrics = data.metrics;
+
+                metricsElement.innerHTML = `
+
+                    <div class="metric">
+                        <div class="metric-title">
+                            Maximum Cache
+                        </div>
+
+                        <div class="metric-value">
+                            ${formatBytes(
+                                metrics.cache_maximum_bytes
+                            )}
+                        </div>
+                    </div>
+
+
+                    <div class="metric">
+                        <div class="metric-title">
+                            Cache In Use
+                        </div>
+
+                        <div class="metric-value">
+                            ${formatBytes(
+                                metrics.cache_bytes_in_use
+                            )}
+                        </div>
+                    </div>
+
+
+                    <div class="metric">
+                        <div class="metric-title">
+                            Dirty Bytes
+                        </div>
+
+                        <div class="metric-value">
+                            ${formatBytes(
+                                metrics.dirty_bytes
+                            )}
+                        </div>
+                    </div>
+
+
+                    <div class="metric">
+                        <div class="metric-title">
+                            Pages Evicted
+                        </div>
+
+                        <div class="metric-value">
+                            ${Number(
+                                metrics.pages_evicted || 0
+                            ).toLocaleString()}
+                        </div>
+                    </div>
+
+
+                    <div class="metric">
+                        <div class="metric-title">
+                            Pages Read
+                        </div>
+
+                        <div class="metric-value">
+                            ${Number(
+                                metrics.pages_read || 0
+                            ).toLocaleString()}
+                        </div>
+                    </div>
+
+                `;
+
+            } catch (error) {
+
+                metricsElement.innerHTML = `
+                    <div class="metric">
+                        <div class="metric-value error">
+                            ${error.message}
+                        </div>
+                    </div>
+                `;
+
+            }
+        }
+
+
+        function formatBytes(bytes) {
+
+            if (
+                bytes === null ||
+                bytes === undefined
+            ) {
+                return "N/A";
+            }
+
+            if (bytes === 0) {
+                return "0 B";
+            }
+
+            const units = [
+                "B",
+                "KB",
+                "MB",
+                "GB",
+                "TB"
+            ];
+
+            const index = Math.floor(
+                Math.log(bytes) / Math.log(1024)
+            );
+
+            return (
+                bytes /
+                Math.pow(1024, index)
+            ).toFixed(2)
+            + " "
+            + units[index];
+        }
+
+
+        // Run automatically when page loads
+        checkConnection();
+        loadMonitoring();
+
+    </script>
+
+</body>
+</html>

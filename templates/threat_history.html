@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Threat Analysis History</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #0f1117;
+
+            color:
+                #ffffff;
+
+            min-height:
+                100vh;
+
+            padding:
+                30px;
+        }
+
+
+        .container {
+
+            max-width:
+                1400px;
+
+            margin:
+                auto;
+        }
+
+
+        /* ==============================
+           HEADER
+        ============================== */
+
+        .header {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                center;
+
+            margin-bottom:
+                30px;
+
+            gap:
+                20px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .header-left h1 {
+
+            font-size:
+                32px;
+
+            margin-bottom:
+                8px;
+        }
+
+
+        .header-left p {
+
+            color:
+                #9ca3af;
+
+            font-size:
+                15px;
+        }
+
+
+        .back-button {
+
+            text-decoration:
+                none;
+
+            color:
+                #ffffff;
+
+            background:
+                #1f2937;
+
+            border:
+                1px solid #374151;
+
+            padding:
+                10px 18px;
+
+            border-radius:
+                8px;
+
+            transition:
+                0.2s;
+        }
+
+
+        .back-button:hover {
+
+            background:
+                #374151;
+        }
+
+
+        /* ==============================
+           STATISTICS
+        ============================== */
+
+        .stats {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap:
+                15px;
+
+            margin-bottom:
+                25px;
+        }
+
+
+        .stat-card {
+
+            background:
+                #171a23;
+
+            border:
+                1px solid #292e3a;
+
+            border-radius:
+                12px;
+
+            padding:
+                20px;
+
+            text-align:
+                center;
+        }
+
+
+        .stat-title {
+
+            color:
+                #9ca3af;
+
+            font-size:
+                14px;
+
+            margin-bottom:
+                10px;
+        }
+
+
+        .stat-number {
+
+            font-size:
+                30px;
+
+            font-weight:
+                bold;
+        }
+
+
+        /* ==============================
+           SEARCH / CONTROLS
+        ============================== */
+
+        .controls {
+
+            display:
+                flex;
+
+            gap:
+                12px;
+
+            margin-bottom:
+                20px;
+
+            flex-wrap:
+                wrap;
+        }
+
+
+        .search-box {
+
+            flex:
+                1;
+
+            min-width:
+                250px;
+
+            padding:
+                12px 15px;
+
+            border-radius:
+                8px;
+
+            border:
+                1px solid #374151;
+
+            background:
+                #171a23;
+
+            color:
+                white;
+
+            outline:
+                none;
+
+            font-size:
+                15px;
+        }
+
+
+        .search-box:focus {
+
+            border-color:
+                #6366f1;
+        }
+
+
+        .refresh-button {
+
+            padding:
+                12px 20px;
+
+            border:
+                none;
+
+            border-radius:
+                8px;
+
+            background:
+                #2563eb;
+
+            color:
+                white;
+
+            cursor:
+                pointer;
+
+            font-size:
+                15px;
+        }
+
+
+        .refresh-button:hover {
+
+            background:
+                #1d4ed8;
+        }
+
+
+        /* ==============================
+           TABLE
+        ============================== */
+
+        .table-container {
+
+            background:
+                #171a23;
+
+            border:
+                1px solid #292e3a;
+
+            border-radius:
+                12px;
+
+            overflow-x:
+                auto;
+        }
+
+
+        table {
+
+            width:
+                100%;
+
+            border-collapse:
+                collapse;
+
+            min-width:
+                900px;
+        }
+
+
+        thead {
+
+            background:
+                #1f2430;
+        }
+
+
+        th {
+
+            padding:
+                16px;
+
+            text-align:
+                left;
+
+            color:
+                #cbd5e1;
+
+            font-size:
+                14px;
+
+            font-weight:
+                600;
+
+            white-space:
+                nowrap;
+        }
+
+
+        td {
+
+            padding:
+                16px;
+
+            border-top:
+                1px solid #292e3a;
+
+            color:
+                #d1d5db;
+
+            font-size:
+                14px;
+        }
+
+
+        tbody tr {
+
+            transition:
+                background 0.2s;
+        }
+
+
+        tbody tr:hover {
+
+            background:
+                #1e2430;
+        }
+
+
+        /* ==============================
+           CLICKABLE INDICATOR
+        ============================== */
+
+        .indicator-link {
+
+            color:
+                #60a5fa;
+
+            text-decoration:
+                none;
+
+            font-weight:
+                600;
+
+            cursor:
+                pointer;
+        }
+
+
+        .indicator-link:hover {
+
+            color:
+                #93c5fd;
+
+            text-decoration:
+                underline;
+        }
+
+
+        /* ==============================
+           THREAT LEVEL
+        ============================== */
+
+        .threat-badge {
+
+            display:
+                inline-block;
+
+            padding:
+                5px 10px;
+
+            border-radius:
+                20px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                bold;
+        }
+
+
+        .critical {
+
+            background:
+                #7f1d1d;
+
+            color:
+                #fecaca;
+        }
+
+
+        .high {
+
+            background:
+                #78350f;
+
+            color:
+                #fed7aa;
+        }
+
+
+        .medium {
+
+            background:
+                #713f12;
+
+            color:
+                #fef08a;
+        }
+
+
+        .low {
+
+            background:
+                #14532d;
+
+            color:
+                #bbf7d0;
+        }
+
+
+        .unknown {
+
+            background:
+                #374151;
+
+            color:
+                #d1d5db;
+        }
+
+
+        /* ==============================
+           TYPE BADGE
+        ============================== */
+
+        .type-badge {
+
+            background:
+                #312e81;
+
+            color:
+                #c7d2fe;
+
+            padding:
+                5px 9px;
+
+            border-radius:
+                6px;
+
+            font-size:
+                12px;
+
+            font-weight:
+                bold;
+        }
+
+
+        /* ==============================
+           NO DATA
+        ============================== */
+
+        .no-data {
+
+            text-align:
+                center;
+
+            padding:
+                50px;
+
+            color:
+                #9ca3af;
+        }
+
+
+        .loading {
+
+            text-align:
+                center;
+
+            padding:
+                50px;
+
+            color:
+                #9ca3af;
+        }
+
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 900px) {
+
+            .stats {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            body {
+
+                padding:
+                    15px;
+            }
+
+
+            .stats {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .header-left h1 {
+
+                font-size:
+                    25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ==============================
+         HEADER
+    ============================== -->
+
+    <div class="header">
+
+        <div class="header-left">
+
+            <h1>
+                🛡️ Threat Analysis History
+            </h1>
+
+            <p>
+                View previously analyzed IP addresses and URLs.
+            </p>
+
+        </div>
+
+
+        <a
+            href="/threat/"
+            class="back-button"
+        >
+            ← Threat Analyzer
+        </a>
+
+    </div>
+
+
+    <!-- ==============================
+         STATISTICS
+    ============================== -->
+
+    <div class="stats">
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Total Analyses
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalAnalyses"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Critical
+            </div>
+
+            <div
+                class="stat-number"
+                id="criticalCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                High
+            </div>
+
+            <div
+                class="stat-number"
+                id="highCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Medium
+            </div>
+
+            <div
+                class="stat-number"
+                id="mediumCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Low
+            </div>
+
+            <div
+                class="stat-number"
+                id="lowCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ==============================
+         CONTROLS
+    ============================== -->
+
+    <div class="controls">
+
+        <input
+            type="text"
+            id="searchInput"
+            class="search-box"
+            placeholder="Search IP, URL, type or threat level..."
+            oninput="filterHistory()"
+        >
+
+
+        <button
+            class="refresh-button"
+            onclick="loadHistory()"
+        >
+            🔄 Refresh
+        </button>
+
+    </div>
+
+
+    <!-- ==============================
+         TABLE
+    ============================== -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Indicator
+                    </th>
+
+                    <th>
+                        Type
+                    </th>
+
+                    <th>
+                        Threat Level
+                    </th>
+
+                    <th>
+                        Malicious
+                    </th>
+
+                    <th>
+                        Suspicious
+                    </th>
+
+                    <th>
+                        Reputation
+                    </th>
+
+                    <th>
+                        Updated
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="historyTable">
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="loading"
+                    >
+                        Loading threat history...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    // ==================================================
+    // STORE ALL RECORDS
+    // ==================================================
+
+    let allRecords = [];
+
+
+    // ==================================================
+    // LOAD HISTORY
+    // ==================================================
+
+    async function loadHistory() {
+
+        const table =
+            document.getElementById(
+                "historyTable"
+            );
+
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="loading"
+                >
+                    Loading threat history...
+                </td>
+
+            </tr>
+
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/threat/history/data"
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.success) {
+
+                throw new Error(
+                    data.error ||
+                    "Failed to load history."
+                );
+
+            }
+
+
+            allRecords =
+                data.results || [];
+
+
+            updateStatistics(
+                allRecords
+            );
+
+
+            displayHistory(
+                allRecords
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "History error:",
+                error
+            );
+
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="no-data"
+                    >
+                        Failed to load threat history.
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+
+    // ==================================================
+    // UPDATE STATISTICS
+    // ==================================================
+
+    function updateStatistics(records) {
+
+
+        let critical = 0;
+
+        let high = 0;
+
+        let medium = 0;
+
+        let low = 0;
+
+
+        records.forEach(
+            function(record) {
+
+                const level =
+                    (
+                        record.threat_level ||
+                        "UNKNOWN"
+                    ).toUpperCase();
+
+
+                if (level === "CRITICAL") {
+
+                    critical++;
+
+                }
+                else if (level === "HIGH") {
+
+                    high++;
+
+                }
+                else if (level === "MEDIUM") {
+
+                    medium++;
+
+                }
+                else if (level === "LOW") {
+
+                    low++;
+
+                }
+
+            }
+        );
+
+
+        document.getElementById(
+            "totalAnalyses"
+        ).textContent =
+            records.length;
+
+
+        document.getElementById(
+            "criticalCount"
+        ).textContent =
+            critical;
+
+
+        document.getElementById(
+            "highCount"
+        ).textContent =
+            high;
+
+
+        document.getElementById(
+            "mediumCount"
+        ).textContent =
+            medium;
+
+
+        document.getElementById(
+            "lowCount"
+        ).textContent =
+            low;
+
+    }
+
+
+    // ==================================================
+    // DISPLAY HISTORY
+    // ==================================================
+
+    function displayHistory(records) {
+
+
+        const table =
+            document.getElementById(
+                "historyTable"
+            );
+
+
+        if (!records.length) {
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="no-data"
+                    >
+                        No threat analysis records found.
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        table.innerHTML =
+            records.map(
+                function(record) {
+
+
+                    const indicator =
+                        record.indicator ||
+                        "-";
+
+
+                    const type =
+                        record.type ||
+                        "-";
+
+
+                    const threatLevel =
+                        (
+                            record.threat_level ||
+                            "UNKNOWN"
+                        ).toUpperCase();
+
+
+                    const malicious =
+                        record.malicious ??
+                        0;
+
+
+                    const suspicious =
+                        record.suspicious ??
+                        0;
+
+
+                    const reputation =
+                        record.reputation ??
+                        "-";
+
+
+                    const updated =
+                        formatDate(
+                            record.updated_at
+                        );
+
+
+                    const threatClass =
+                        threatLevel.toLowerCase();
+
+
+                    /*
+                     * IMPORTANT:
+                     *
+                     * encodeURIComponent()
+                     * safely encodes IPs and URLs
+                     * before putting them into the
+                     * details URL.
+                     */
+
+                    const encodedIndicator =
+                        encodeURIComponent(
+                            indicator
+                        );
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+
+                                <a
+                                    class="indicator-link"
+                                    href="/threat/details/view/${encodedIndicator}"
+                                >
+                                    ${escapeHtml(
+                                        indicator
+                                    )}
+                                </a>
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="type-badge"
+                                >
+                                    ${escapeHtml(
+                                        type
+                                    )}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="threat-badge ${threatClass}"
+                                >
+                                    ${escapeHtml(
+                                        threatLevel
+                                    )}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+                                ${malicious}
+                            </td>
+
+
+                            <td>
+                                ${suspicious}
+                            </td>
+
+
+                            <td>
+                                ${reputation}
+                            </td>
+
+
+                            <td>
+                                ${updated}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    // ==================================================
+    // SEARCH / FILTER
+    // ==================================================
+
+    function filterHistory() {
+
+
+        const search =
+            document
+                .getElementById(
+                    "searchInput"
+                )
+                .value
+                .toLowerCase()
+                .trim();
+
+
+        if (!search) {
+
+            displayHistory(
+                allRecords
+            );
+
+            return;
+
+        }
+
+
+        const filtered =
+            allRecords.filter(
+                function(record) {
+
+
+                    const indicator =
+                        String(
+                            record.indicator || ""
+                        ).toLowerCase();
+
+
+                    const type =
+                        String(
+                            record.type || ""
+                        ).toLowerCase();
+
+
+                    const threatLevel =
+                        String(
+                            record.threat_level || ""
+                        ).toLowerCase();
+
+
+                    return (
+
+                        indicator.includes(
+                            search
+                        )
+
+                        ||
+
+                        type.includes(
+                            search
+                        )
+
+                        ||
+
+                        threatLevel.includes(
+                            search
+                        )
+
+                    );
+
+                }
+            );
+
+
+        displayHistory(
+            filtered
+        );
+
+    }
+
+
+    // ==================================================
+    // FORMAT DATE
+    // ==================================================
+
+    function formatDate(dateValue) {
+
+
+        if (!dateValue) {
+
+            return "-";
+
+        }
+
+
+        try {
+
+            const date =
+                new Date(
+                    dateValue
+                );
+
+
+            if (
+                Number.isNaN(
+                    date.getTime()
+                )
+            ) {
+
+                return "-";
+
+            }
+
+
+            return date.toLocaleString();
+
+        }
+        catch (error) {
+
+            return "-";
+
+        }
+
+    }
+
+
+    // ==================================================
+    // ESCAPE HTML
+    // ==================================================
+
+    function escapeHtml(value) {
+
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+
+        div.textContent =
+            value;
+
+
+        return div.innerHTML;
+
+    }
+
+
+    // ==================================================
+    // LOAD DATA WHEN PAGE OPENS
+    // ==================================================
+
+    loadHistory();
+
+
+</script>
+
+
+</body>
+
+</html>

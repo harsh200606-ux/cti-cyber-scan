@@ -1,0 +1,23 @@
+[
+    {
+        "type": "IP",
+        "value": "185.220.101.45",
+        "risk_score": 90,
+        "severity": "CRITICAL",
+        "reason": "Known suspicious IP address"
+    },
+    {
+        "type": "IP",
+        "value": "192.0.2.10",
+        "risk_score": 70,
+        "severity": "HIGH",
+        "reason": "Example suspicious IP used for testing"
+    },
+    {
+        "type": "URL",
+        "value": "http://malicious-example.com/login.exe",
+        "risk_score": 95,
+        "severity": "CRITICAL",
+        "reason": "Suspicious executable download URL"
+    }
+]
