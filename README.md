@@ -1,4 +1,4 @@
-# Chapter 7: MongoDB Architecture Deep Dive
+#  MongoDB Architecture Deep Dive
 
 ## What You'll Learn
 
